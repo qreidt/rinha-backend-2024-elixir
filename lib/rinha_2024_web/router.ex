@@ -5,8 +5,9 @@ defmodule RinhaWeb.Router do
     plug :accepts, ["json"]
   end
 
-  scope "/api", RinhaWeb do
+  scope "/", RinhaWeb do
     pipe_through :api
+    get("/clientes/:id/extrato", ExtratoController, :handle)
   end
 
   # Enable LiveDashboard in development
