@@ -2,6 +2,8 @@ defmodule Rinha.Transactions.Transaction do
   use Ecto.Schema
   import Ecto.Changeset
 
+  @types ["c", "d"]
+
   schema "transactions" do
     field :user_id, :id
     field :value, :integer
@@ -13,7 +15,7 @@ defmodule Rinha.Transactions.Transaction do
 
   @doc false
   def changeset(transaction, attrs) do
-    IO.inspect(attrs)
+
     transaction
     |> cast(attrs, [:user_id, :value, :type, :description])
     |> validate_required([:value, :type, :description])
@@ -22,6 +24,10 @@ defmodule Rinha.Transactions.Transaction do
   end
 
   defp validate_type(:type, value) do
-    if value == "c" or value == "d", do: [], else: [type: "Operação Inválida"]
+    if value in @types, do: [], else: [type: "Operação Inválida"]
   end
+
+  def get_value(%Rinha.Transactions.Transaction{} = transaction) when transaction.type == "c", do: transaction.value
+  def get_value(%Rinha.Transactions.Transaction{} = transaction) when transaction.type == "d", do: -transaction.value
+  def get_value(%Rinha.Transactions.Transaction{} = _transaction), do: 0
 end
