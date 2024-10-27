@@ -11,11 +11,16 @@ defmodule Rinha.Users.User do
   def changeset(user, attrs) do
     user
     |> cast(attrs, [:balance])
-    |> validate_required([:limit, :balance])
-    |> validate_change(:balance, &balance_not_negative/2)
+    |> validate_required([:balance])
+    |> validate_limit()
   end
 
-  defp balance_not_negative(:balance, balance) do
-    if balance >= 0, do: [], else: [balance: "Balance must be > 0."]
+  defp validate_limit(changeset) do
+    validate_change(changeset, :balance, fn (:balance, balance) ->
+      limit = get_field(changeset, :limit)
+
+      if balance >= -limit, do: [], else: [_: "Operação negada"]
+    end)
   end
+
 end
