@@ -8,6 +8,7 @@ defmodule RinhaWeb.Router do
   scope "/", RinhaWeb do
     pipe_through :api
     get("/clientes/:id/extrato", ExtratoController, :handle)
+    post("/clientes/:id/transacoes", TransactionController, :handle)
   end
 
   # Enable LiveDashboard in development
